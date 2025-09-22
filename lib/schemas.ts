@@ -120,6 +120,7 @@ const PaymentInformationSchema = z.object({
     bankName: fieldValidators.stringMin1,
     accountName: fieldValidators.stringMin1,
     accountNumber: fieldValidators.stringMin1,
+    ifsc: fieldValidators.stringMin1
 });
 
 const DiscountDetailsSchema = z.object({
