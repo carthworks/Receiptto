@@ -198,7 +198,7 @@ const InvoiceTemplate3 = (data: InvoiceType) => {
             {details.paymentInformation?.bankName && <div>Bank: {details.paymentInformation.bankName}</div>}
             {details.paymentInformation?.accountName && <div>Account name: {details.paymentInformation.accountName}</div>}
             {details.paymentInformation?.accountNumber && <div>Account no: {details.paymentInformation.accountNumber}</div>}
-            {details.paymentInformation?.ifsc && <div>IFSC: {details.paymentInformation.ifsc}</div>}
+            {details.paymentInformation?.ifsc && <div>IFSC: {details?.paymentInformation?.ifsc}</div>}
           </div>
         </div>
       </section>
