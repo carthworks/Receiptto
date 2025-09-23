@@ -186,8 +186,10 @@ const InvoiceTemplate = (data: InvoiceType) => {
 							<p className='text-sm'>Bank: {details.paymentInformation?.bankName}</p>
 							<p className='text-sm'>Account name: {details.paymentInformation?.accountName}</p>
 							<p className='text-sm'>Account no: {details.paymentInformation?.accountNumber}</p>
+							<p className='text-sm'>IFSC no: {details.paymentInformation?.ifsc}</p>
 						</span>
 					</div>
+					
 				</div>
 				<p className='text-gray-500 text-sm'>
 					If you have any questions concerning this invoice, use the following contact information:
