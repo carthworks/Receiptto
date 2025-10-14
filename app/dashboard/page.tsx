@@ -1,7 +1,7 @@
+'use client';
 import React, { useMemo, useState } from "react";
 
-// Example shadcn/ui imports (optional) — replace with your project's components if needed
-// import { Card } from "@/components/ui/card";
+
 
 export type Invoice = {
   id: string;

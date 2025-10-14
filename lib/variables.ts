@@ -249,9 +249,10 @@ export const FORM_FILL_VALUES = {
       bankName: "Bank Inc.",
       accountName: "John Doe",
       accountNumber: "445566998877",
-      ifsc:""
+      ifsc:"",
+      gst:"29AAEPM0182R1ZV"
     },
-    
+
     additionalNotes: "Thank you for your business",
     paymentTerms: "Net 30",
     signature: {
