@@ -1,3 +1,4 @@
+import React from "react";
 import { NextRequest, NextResponse } from "next/server";
 
 // Chromium
@@ -26,11 +27,24 @@ export async function generatePdfService(req: NextRequest) {
     let page;
 
     try {
-        const ReactDOMServer = (await import("react-dom/server")).default;
-        const templateId = body.details.pdfTemplate;
+        const ReactDOMServer = await import("react-dom/server");
+        const renderToStaticMarkup =
+            ReactDOMServer.renderToStaticMarkup ||
+            ReactDOMServer.default?.renderToStaticMarkup;
+
+        if (!renderToStaticMarkup) {
+            throw new Error("renderToStaticMarkup is not available");
+        }
+
+        const templateId = body?.details?.pdfTemplate || 1;
         const InvoiceTemplate = await getInvoiceTemplate(templateId);
-        const htmlTemplate = ReactDOMServer.renderToStaticMarkup(
-            InvoiceTemplate(body)
+
+        if (!InvoiceTemplate) {
+            throw new Error(`Failed to load invoice template ${templateId}`);
+        }
+
+        const htmlTemplate = renderToStaticMarkup(
+            React.createElement(InvoiceTemplate, body)
         );
 
 		if (ENV === "production") {
@@ -42,10 +56,19 @@ export async function generatePdfService(req: NextRequest) {
 			});
 		} else {
 			const puppeteer = (await import("puppeteer")).default;
-			browser = await puppeteer.launch({
-				args: ["--no-sandbox", "--disable-setuid-sandbox"],
-				headless: true,
-			});
+			try {
+				browser = await puppeteer.launch({
+					args: ["--no-sandbox", "--disable-setuid-sandbox"],
+					headless: true,
+				});
+			} catch (launchErr) {
+				console.warn("Default puppeteer launch failed, falling back to chrome channel:", launchErr);
+				browser = await puppeteer.launch({
+					args: ["--no-sandbox", "--disable-setuid-sandbox"],
+					headless: true,
+					channel: "chrome",
+				});
+			}
 		}
 
         if (!browser) {
@@ -53,8 +76,8 @@ export async function generatePdfService(req: NextRequest) {
         }
 
         page = await browser.newPage();
-        await page.setContent(await htmlTemplate, {
-            waitUntil: ["networkidle0", "load", "domcontentloaded"],
+        await page.setContent(htmlTemplate, {
+            waitUntil: ["load", "domcontentloaded"],
             timeout: 30000,
         });
 
@@ -62,13 +85,15 @@ export async function generatePdfService(req: NextRequest) {
             url: TAILWIND_CDN,
         });
 
+        await page.evaluateHandle("document.fonts.ready");
+
 		const pdf: Uint8Array = await page.pdf({
 			format: "a4",
 			printBackground: true,
 			preferCSSPageSize: true,
 		});
 
-		return new NextResponse(new Blob([pdf], { type: "application/pdf" }), {
+		return new NextResponse(Buffer.from(pdf), {
 			headers: {
 				"Content-Type": "application/pdf",
 				"Content-Disposition": "attachment; filename=invoice.pdf",

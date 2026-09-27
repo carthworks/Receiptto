@@ -171,18 +171,35 @@ const isDataUrl = (str: string) => str.startsWith("data:");
  * @throws {Error} Throws an error if there is an issue with the dynamic import or if a default template is not available.
  */
 const getInvoiceTemplate = async (templateId: number) => {
-    // Dynamic template component name
-    const componentName = `InvoiceTemplate${templateId}`;
-
     try {
-        const module = await import(
-            `@/app/components/templates/invoice-pdf/${componentName}`
-        );
-        return module.default;
+        switch (templateId) {
+            case 1: {
+                const m = await import(
+                    "@/app/components/templates/invoice-pdf/InvoiceTemplate1"
+                );
+                return m.default;
+            }
+            case 2: {
+                const m = await import(
+                    "@/app/components/templates/invoice-pdf/InvoiceTemplate2"
+                );
+                return m.default;
+            }
+            case 3: {
+                const m = await import(
+                    "@/app/components/templates/invoice-pdf/InvoiceTemplate3"
+                );
+                return m.default;
+            }
+            default: {
+                const m = await import(
+                    "@/app/components/templates/invoice-pdf/InvoiceTemplate1"
+                );
+                return m.default;
+            }
+        }
     } catch (err) {
-        console.error(`Error importing template ${componentName}: ${err}`);
-
-        // Provide a default template
+        console.error(`Error importing template ${templateId}: ${err}`);
         return null;
     }
 };

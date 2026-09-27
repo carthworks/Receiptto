@@ -73,9 +73,18 @@ const useToasts = () => {
         });
     };
 
+    const pdfGenerationError = () => {
+        toast({
+            variant: "destructive",
+            title: "Error generating PDF",
+            description: "Failed to generate PDF invoice. Please try again.",
+        });
+    };
+
     return {
         newInvoiceSuccess,
         pdfGenerationSuccess,
+        pdfGenerationError,
         saveInvoiceSuccess,
         modifiedInvoiceSuccess,
         sendPdfSuccess,

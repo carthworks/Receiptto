@@ -5,7 +5,6 @@ import { useFormContext } from "react-hook-form";
 
 // ShadCn
 import {
-    FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -55,17 +54,15 @@ const CurrencySelector = ({
                             </div>
                             <div>
                                 <Select
-                                    {...field}
+                                    value={field.value}
                                     defaultValue={field.value}
                                     onValueChange={field.onChange}
                                 >
-                                    <FormControl>
-                                        <SelectTrigger className="w-[13rem]">
-                                            <SelectValue
-                                                placeholder={placeholder}
-                                            />
-                                        </SelectTrigger>
-                                    </FormControl>
+                                    <SelectTrigger className="w-[13rem]">
+                                        <SelectValue
+                                            placeholder={placeholder}
+                                        />
+                                    </SelectTrigger>
                                     <SelectContent
                                         style={{
                                             overflowY: "hidden",

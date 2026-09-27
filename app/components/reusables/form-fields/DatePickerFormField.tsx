@@ -9,7 +9,6 @@ import { useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
-    FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -33,12 +32,22 @@ import { CalendarIcon } from "lucide-react";
 // Types
 import { NameType } from "@/types";
 
+type DatePickerPreset = {
+    label: string;
+    days: number;
+};
+
 type DatePickerFormFieldProps = {
     name: NameType;
     label?: string;
+    presets?: DatePickerPreset[];
 };
 
-const DatePickerFormField = ({ name, label }: DatePickerFormFieldProps) => {
+const DatePickerFormField = ({
+    name,
+    label,
+    presets,
+}: DatePickerFormFieldProps) => {
     const { control } = useFormContext();
 
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -60,28 +69,26 @@ const DatePickerFormField = ({ name, label }: DatePickerFormFieldProps) => {
                                     onOpenChange={setIsPopoverOpen}
                                 >
                                     <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant={"outline"}
-                                                className={cn(
-                                                    "w-[13rem]",
-                                                    !field.value &&
-                                                        "text-muted-foreground"
-                                                )}
-                                            >
-                                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                                {field.value ? (
-                                                    new Date(
-                                                        field.value
-                                                    ).toLocaleDateString(
-                                                        "en-US",
-                                                        DATE_OPTIONS
-                                                    )
-                                                ) : (
-                                                    <span>Pick a date</span>
-                                                )}
-                                            </Button>
-                                        </FormControl>
+                                        <Button
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-[13rem]",
+                                                !field.value &&
+                                                    "text-muted-foreground"
+                                            )}
+                                        >
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {field.value ? (
+                                                new Date(
+                                                    field.value
+                                                ).toLocaleDateString(
+                                                    "en-US",
+                                                    DATE_OPTIONS
+                                                )
+                                            ) : (
+                                                <span>Pick a date</span>
+                                            )}
+                                        </Button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-auto p-0">
                                         <Calendar
@@ -104,6 +111,27 @@ const DatePickerFormField = ({ name, label }: DatePickerFormFieldProps) => {
                                         />
                                     </PopoverContent>
                                 </Popover>
+                                {presets && presets.length > 0 && (
+                                    <div className="flex flex-wrap gap-1.5 mt-2 justify-end">
+                                        {presets.map((preset) => (
+                                            <button
+                                                key={preset.label}
+                                                type="button"
+                                                onClick={() => {
+                                                    const targetDate = new Date();
+                                                    targetDate.setDate(
+                                                        targetDate.getDate() +
+                                                            preset.days
+                                                    );
+                                                    field.onChange(targetDate);
+                                                }}
+                                                className="text-[11px] font-medium px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shadow-2xs cursor-pointer"
+                                            >
+                                                {preset.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                                 <FormMessage />
                             </div>
                         </div>

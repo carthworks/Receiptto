@@ -70,6 +70,7 @@ export const InvoiceContextProvider = ({
   const {
     newInvoiceSuccess,
     pdfGenerationSuccess,
+    pdfGenerationError,
     saveInvoiceSuccess,
     modifiedInvoiceSuccess,
     sendPdfSuccess,
@@ -170,6 +171,10 @@ export const InvoiceContextProvider = ({
         body: JSON.stringify(data),
       });
 
+      if (!response.ok) {
+        throw new Error("Failed to generate PDF");
+      }
+
       const result = await response.blob();
       setInvoicePdf(result);
 
@@ -178,11 +183,12 @@ export const InvoiceContextProvider = ({
         pdfGenerationSuccess();
       }
     } catch (err) {
-      console.log(err);
+      console.error("PDF generation failed:", err);
+      pdfGenerationError();
     } finally {
       setInvoicePdfLoading(false);
     }
-  }, []);
+  }, [pdfGenerationSuccess, pdfGenerationError]);
 
   /**
    * Removes the final PDF file and switches to Live Preview

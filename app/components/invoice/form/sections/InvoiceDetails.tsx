@@ -46,6 +46,12 @@ const InvoiceDetails = () => {
                     <DatePickerFormField
                         name="details.dueDate"
                         label={_t("form.steps.invoiceDetails.dueDate")}
+                        presets={[
+                            { label: "Today", days: 0 },
+                            { label: "Net 7", days: 7 },
+                            { label: "Net 14", days: 14 },
+                            { label: "Net 30", days: 30 },
+                        ]}
                     />
 
                     <CurrencySelector

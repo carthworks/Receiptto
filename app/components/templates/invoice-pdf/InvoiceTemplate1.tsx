@@ -1,7 +1,7 @@
 import React from "react";
 
 // Components
-import { InvoiceLayout } from "@/app/components";
+import InvoiceLayout from "./InvoiceLayout";
 
 // Helpers
 import { formatNumberWithCommas, isDataUrl } from "@/lib/helpers";
